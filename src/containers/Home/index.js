@@ -14,6 +14,7 @@ import {ForecastView} from "./views/ForecastView";
 import {colorStates} from "../../utils/styles/colors";
 import Geolocation from '@react-native-community/geolocation';
 import NoDataView from "./views/NoDataView";
+import {Navigation} from "react-native-navigation";
 
 
 export const Home = (props) => {
@@ -130,7 +131,16 @@ export const Home = (props) => {
             </View>
 
             <Box position="relative" h={100} w="100%">
-                <Fab position="absolute" size="sm" icon={<Icon onPress={()=>checkPermissions()} name={"refresh"} style={{color:colorsState?.forecastBackground}}/>}  style={{backgroundColor:'white'}} />
+                <Fab position="absolute" size="sm" icon={<Icon onPress={()=>checkPermissions()} name={"refresh"} style={{color:colorsState?.forecastBackground, fontSize:20}}/>}  style={{backgroundColor:'white'}} />
+
+                <Fab right={330} bottom={5} size="sm" icon={<Icon onPress={()=> {
+                    Navigation.push(props.componentId,
+                        {
+                            component: {
+                                name: 'SavedLocations'
+                            }
+                        })
+                }} name={"hexagram-outline"} style={{color:colorsState?.forecastBackground, fontSize:20}}/>}  style={{backgroundColor:'white'}} />
             </Box>
 
         </SafeAreaProvider>

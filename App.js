@@ -17,7 +17,7 @@ import {moveToHomeScreen} from "./src/navigation";
 import {CustomStatusBar} from "./src/components/StatusBar/CustomStatusBar";
 import {SafeAreaProvider} from "react-native-safe-area-context/src/SafeAreaContext";
 import {Heading, Spinner, theme} from "native-base";
-import {saveForecastWeatherStatus, saveWeatherStatus} from "./src/redux/weatherSlice";
+import {saveForecastWeatherStatus, saveWeatherLocation, saveWeatherStatus} from "./src/redux/weatherSlice";
 import {useDispatch} from "react-redux";
 
 
@@ -50,11 +50,25 @@ const App = () => {
         }
     };
 
+    const retrieveSavedLocationsData = async () => {
+        try {
+            const value = await AsyncStorage.getItem('@MyWeatherStore:SavedLocations');
+            if (value !== null) {
+                dispatch(saveWeatherLocation(JSON.parse(value),false))
+            }else{
+                console.log('NO VALUE FOUND');
+            }
+        } catch (error) {
+
+        }
+    };
+
 
 
     useEffect(() => {
         retrieveLatestWeatherData().then(()=>{
             retrieveLatestForecastWeatherData().then(()=>{
+                retrieveSavedLocationsData()
                 moveToHomeScreen()
             })
 

@@ -6,7 +6,8 @@ const weatherSlice = createSlice({
     name: "profile",
     initialState: {
         details: {},
-        forecastDetails: {}
+        forecastDetails: {},
+        savedLocations: []
     },
     reducers: {
         updateWeatherStatus: (state, action) => {
@@ -14,6 +15,9 @@ const weatherSlice = createSlice({
         },
         updateForecastWeatherStatus: (state, action) => {
             state.forecastDetails = action.payload
+        },
+        updateSavedLocations: (state, action) => {
+            state.savedLocations = action.payload
         },
     }
 })
@@ -40,6 +44,7 @@ export const saveWeatherStatus = (data, shouldUpdate) => {
 
     }
 }
+
 export const saveForecastWeatherStatus = (data, shouldUpdate) => {
     return async (dispatch) => {
 
@@ -61,4 +66,19 @@ export const saveForecastWeatherStatus = (data, shouldUpdate) => {
     }
 }
 
+export const saveWeatherLocation = (data) => {
+    return async (dispatch) => {
+
+        dispatch(WEATHER_ACTIONS.updateSavedLocations(data))
+        try {
+            const convertedWeatherData = JSON.stringify(data)
+            await AsyncStorage.setItem(
+                '@MyWeatherStore:SavedLocations',
+                convertedWeatherData
+            );
+        } catch (error) {
+            console.log('Error')
+        }
+    }
+}
 export default weatherSlice.reducer
