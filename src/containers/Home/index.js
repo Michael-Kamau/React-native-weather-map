@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {SafeAreaProvider} from "react-native-safe-area-context/src/SafeAreaContext";
 import {ImageBackground, ScrollView, StyleSheet} from "react-native";
 import {useDispatch, useSelector} from "react-redux";
@@ -8,66 +8,75 @@ import {theme} from "../../utils/styles/theme";
 import useAxios from "../../hooks/Network/useAxios";
 import {fetchCurrentWeatherConfig, fetchForecastWeatherConfig} from "../../utils/apis/requestConfigs";
 import {saveForecastWeatherStatus, saveWeatherStatus} from "../../redux/weatherSlice";
-import {Box, Text} from "native-base";
+import CurrentView from "./views/CurrentView";
+import {FlatList, View} from "native-base";
+import {ForecastView} from "./views/ForecastView";
+import {colorStates} from "../../utils/styles/colors";
 
 export const Home = (props) => {
-    const {details, forecast} = useSelector((state) => state.weather)
+    const {forecastDetails, details} = useSelector((state) => state.weather)
 
-    const dispatch= useDispatch()
+    const [colorsState, setColorsState] = useState({name: '', image: ''})
 
-    const {loading: loadingCurrentWeather, data: currentWeatherData, error: currentWeatherError, sendRequest: currentWeatherRequest} = useAxios()
-    const {loading: loadingForecastWeather, data: forecastWeatherData, error: forecastWeatherError, sendRequest: forecastWeatherRequest} = useAxios()
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        if(details.weather){
+          setColorsState(colorStates(details?.weather[0].main))
+        }
+    }, [details])
+
+    const {
+        loading: loadingCurrentWeather,
+        data: currentWeatherData,
+        error: currentWeatherError,
+        sendRequest: currentWeatherRequest
+    } = useAxios()
+    const {
+        loading: loadingForecastWeather,
+        data: forecastWeatherData,
+        error: forecastWeatherError,
+        sendRequest: forecastWeatherRequest
+    } = useAxios()
 
 
-    const fetchCurrentWeather = (lat,lon) => {
-        currentWeatherRequest(fetchCurrentWeatherConfig(lat,lon), (data) => {
-            if(data.weather){
+    const fetchCurrentWeather = (lat, lon) => {
+        currentWeatherRequest(fetchCurrentWeatherConfig(lat, lon), (data) => {
+            if (data.weather) {
                 dispatch(saveWeatherStatus(data))
             }
         })
     }
-    const fetchForecastWeather = (lat,lon) => {
-        currentWeatherRequest(fetchForecastWeatherConfig(lat,lon), (data) => {
-            if(data?.list){
+    const fetchForecastWeather = (lat, lon) => {
+        currentWeatherRequest(fetchForecastWeatherConfig(lat, lon), (data) => {
+            if (data?.list) {
                 dispatch(saveForecastWeatherStatus(data))
             }
         })
     }
 
     useEffect(() => {
-       fetchCurrentWeather('-1.292066','36.821945')
-        fetchForecastWeather('-1.292066','36.821945')
+        fetchCurrentWeather('-1.292066', '36.821945')
+        fetchForecastWeather('-1.292066', '36.821945')
     }, [])
 
     return (
-        <SafeAreaProvider style={{flex: 1}}>
-            <CustomStatusBar backgroundColor={theme.colors.primary["700"]}/>
-            <ScrollView contentContainerStyle={{paddingBottom: 60}}>
-                <ImageBackground source={require('../../utils/images/forest_cloudy.png')} resizeMode="cover" style={styles.image}>
-                    <Box p={3}>
-                        <Text >Inside</Text>
-                        <Text >Inside</Text>
-
-
-                    </Box>
-                </ImageBackground>
-
-
-            </ScrollView>
+        <SafeAreaProvider style={{ backgroundColor: colorsState.forecastBackground}}>
+            <CustomStatusBar backgroundColor={colorsState.statusBarColor}/>
+            {console.log('COlor states are as below',colorsState)}
+            <View >
+                <CurrentView/>
+            </View>
+            {
+                Array.isArray(forecastDetails.list) &&
+                <FlatList
+                    data={forecastDetails.list}
+                    renderItem={item => <ForecastView item={item}/>}
+                />
+            }
         </SafeAreaProvider>
     );
 }
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    image: {
-        flex: 1,
-        justifyContent: "center",
-        width:'100%',
-        height:70
-    },
-});
 
 
 Home.options = {
