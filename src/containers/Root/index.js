@@ -26,7 +26,7 @@ const Root = ({PassedComponent, componentProps}) => {
                 Snackbar.dismiss()
             } else {
                 Snackbar.show({
-                    text: 'You have lost your network connection',
+                    text: 'No internet connection',
                     duration: Snackbar.LENGTH_INDEFINITE,
                 });
             }

@@ -3,14 +3,18 @@ import React, {useEffect, useState} from "react";
 import {Box, Center, Heading, HStack, Text, VStack} from "native-base";
 import {kelvinToCelcius} from "../../../utils/functions";
 import {useSelector} from "react-redux";
+import moment from "moment";
 
 export const CurrentView = () => {
     const {details} = useSelector((state) => state.weather)
 
-    const [weatherState, setWeatherState] = useState({name: '', image: ''})
+    const [weatherState, setWeatherState] = useState({
+        name: 'Sunny',
+        image: require('../../../utils/images/forest_sunny.png')
+    })
 
-    const updateWeatherState = () => {
-        switch (details?.weather[0]?.main) {
+    const updateWeatherState = (weather) => {
+        switch (weather) {
             case 'Clouds':
                 setWeatherState({name: 'Cloudy', image: require('../../../utils/images/forest_cloudy.png')})
                 break;
@@ -19,7 +23,11 @@ export const CurrentView = () => {
                 setWeatherState({name: 'Rainy', image: require('../../../utils/images/forest_rainy.png')})
                 break;
 
-            case 'Sun':
+            case 'Clear':
+                setWeatherState({name: 'Sunny', image: require('../../../utils/images/forest_sunny.png')})
+                break;
+
+            default:
                 setWeatherState({name: 'Sunny', image: require('../../../utils/images/forest_sunny.png')})
                 break;
         }
@@ -27,18 +35,16 @@ export const CurrentView = () => {
     }
 
     useEffect(() => {
-        if(details.weather){
-            updateWeatherState()
-        }
+        updateWeatherState(details?.weather ? details?.weather[0]?.main : 'default')
     }, [details])
 
     return (
-        <View style={{borderBottomWidth:1, borderBottomColor:'white'}}>
+        <View style={{borderBottomWidth: 1, borderBottomColor: 'white'}}>
             <ImageBackground source={weatherState.image} resizeMode="cover"
                              style={styles.image}>
                 <Center p={3}>
-                    <Heading color={'white'}  size="2xl">{kelvinToCelcius(details?.main?.temp)}°</Heading>
-                    <Heading color={'white'}  size="2xl">{weatherState.name}</Heading>
+                    <Heading color={'white'} size="2xl">{kelvinToCelcius(details?.main?.temp)}°</Heading>
+                    <Heading color={'white'} size="2xl">{weatherState.name}</Heading>
                 </Center>
             </ImageBackground>
             <HStack p={2} justifyContent={'space-between'}>
@@ -55,20 +61,22 @@ export const CurrentView = () => {
                     <Text color={'white'}>Max</Text>
                 </Box>
             </HStack>
+            <Text color={'white'}>Last updated: {moment(details?.updated_at).format('MM/DD/YYYY')} at {moment(details?.updated_at).format("hh:mm:ss a")}</Text>
+
+
 
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
+
     image: {
+        // flex:1,
         justifyContent: "center",
         width: '100%',
-        paddingTop:80,
-        paddingBottom:120,
+        paddingTop: 80,
+        paddingBottom: 120,
     },
 });
 

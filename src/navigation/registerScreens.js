@@ -10,7 +10,6 @@ import {AppRegistry} from "react-native";
 
 
 export const registerScreens = () => {
-    AppRegistry.registerComponent('ReactNativeWeatherMap', ()  => App );
     //Root Screen
     Navigation.registerComponent("App", () => (props) =>
         <Provider store={store}>

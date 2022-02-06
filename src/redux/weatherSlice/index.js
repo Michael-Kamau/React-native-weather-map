@@ -1,10 +1,12 @@
 import {createSlice} from "@reduxjs/toolkit";
+import {AsyncStorage} from "react-native";
+import moment from "moment";
 
 const weatherSlice = createSlice({
     name: "profile",
     initialState: {
         details: {},
-        forecastDetails:{}
+        forecastDetails: {}
     },
     reducers: {
         updateWeatherStatus: (state, action) => {
@@ -18,14 +20,44 @@ const weatherSlice = createSlice({
 
 export const WEATHER_ACTIONS = weatherSlice.actions
 
-export const saveWeatherStatus = (data) => {
+export const saveWeatherStatus = (data, shouldUpdate) => {
     return async (dispatch) => {
-        dispatch(WEATHER_ACTIONS.updateWeatherStatus(data))
+        if (shouldUpdate) {
+            data.updated_at = String(new Date())
+            dispatch(WEATHER_ACTIONS.updateWeatherStatus(data))
+            try {
+                const convertedWeatherData = JSON.stringify(data)
+                await AsyncStorage.setItem(
+                    '@MyWeatherStore:LatestWeather',
+                    convertedWeatherData
+                );
+            } catch (error) {
+                console.log('Error')
+            }
+        } else {
+            dispatch(WEATHER_ACTIONS.updateWeatherStatus(data))
+        }
+
     }
 }
-export const saveForecastWeatherStatus = (data) => {
+export const saveForecastWeatherStatus = (data, shouldUpdate) => {
     return async (dispatch) => {
-        dispatch(WEATHER_ACTIONS.updateForecastWeatherStatus(data))
+
+        if (shouldUpdate) {
+            data.updated_at = String(new Date())
+            dispatch(WEATHER_ACTIONS.updateForecastWeatherStatus(data))
+            try {
+                const convertedWeatherData = JSON.stringify(data)
+                await AsyncStorage.setItem(
+                    '@MyWeatherStore:LatestForecastWeather',
+                    convertedWeatherData
+                );
+            } catch (error) {
+                console.log('Error')
+            }
+        } else {
+            dispatch(WEATHER_ACTIONS.updateForecastWeatherStatus(data))
+        }
     }
 }
 

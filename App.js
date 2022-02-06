@@ -10,20 +10,58 @@ import React, {useEffect} from 'react';
 import {
     Text,
     View,
+    AsyncStorage
 } from 'react-native';
 
 import {moveToHomeScreen} from "./src/navigation";
 import {CustomStatusBar} from "./src/components/StatusBar/CustomStatusBar";
 import {SafeAreaProvider} from "react-native-safe-area-context/src/SafeAreaContext";
 import {Heading, Spinner, theme} from "native-base";
+import {saveForecastWeatherStatus, saveWeatherStatus} from "./src/redux/weatherSlice";
+import {useDispatch} from "react-redux";
 
 
 const App = () => {
+    const dispatch = useDispatch()
+
+    const retrieveLatestWeatherData = async () => {
+        try {
+            const value = await AsyncStorage.getItem('@MyWeatherStore:LatestWeather');
+            if (value !== null) {
+                dispatch(saveWeatherStatus(JSON.parse(value),false))
+            }else{
+                console.log('NO VALUE FOUND');
+            }
+        } catch (error) {
+
+        }
+    };
+
+    const retrieveLatestForecastWeatherData = async () => {
+        try {
+            const value = await AsyncStorage.getItem('@MyWeatherStore:LatestForecastWeather');
+            if (value !== null) {
+                dispatch(saveForecastWeatherStatus(JSON.parse(value),false))
+            }else{
+                console.log('NO VALUE FOUND');
+            }
+        } catch (error) {
+
+        }
+    };
+
+
 
     useEffect(() => {
-        setTimeout(() => {
-            moveToHomeScreen()
-        }, 1500)
+        retrieveLatestWeatherData().then(()=>{
+            retrieveLatestForecastWeatherData().then(()=>{
+                moveToHomeScreen()
+            })
+
+        })
+        // setTimeout(() => {
+        //     moveToHomeScreen()
+        // }, 1500)
 
     });
     return (

@@ -11,7 +11,13 @@ export const colorStates = (weather) => {
                 forecastBackground: '#57575d'
             }
 
-        case 'Sun':
+        case 'Clear':
+            return {
+                statusBarColor: '#f5d8ad',
+                forecastBackground: '#47ab2f'
+            }
+
+        default:
             return {
                 statusBarColor: '#f5d8ad',
                 forecastBackground: '#47ab2f'
