@@ -106,6 +106,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		311E08D55F864752A8D9A1AE /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
+			path = "";
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -122,6 +130,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				B9F60DF2EAA006CABA5BB0A5 /* Pods */,
+				311E08D55F864752A8D9A1AE /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -145,7 +154,6 @@
 				2711AEA63222DAD00790A437 /* Pods-ReactNativeWeatherMap-ReactNativeWeatherMapTests.debug.xcconfig */,
 				1783E434B4D91874EA9E05B2 /* Pods-ReactNativeWeatherMap-ReactNativeWeatherMapTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
