@@ -133,7 +133,7 @@ export const Home = (props) => {
             <Box position="relative" h={100} w="100%">
                 <Fab position="absolute" size="sm" icon={<Icon onPress={()=>checkPermissions()} name={"refresh"} style={{color:colorsState?.forecastBackground, fontSize:20}}/>}  style={{backgroundColor:'white'}} />
 
-                <Fab right={330} bottom={5} size="sm" icon={<Icon onPress={()=> {
+                <Fab right={4} bottom={90} size="sm" icon={<Icon onPress={()=> {
                     Navigation.push(props.componentId,
                         {
                             component: {
