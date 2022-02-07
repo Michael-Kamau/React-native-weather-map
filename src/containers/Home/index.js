@@ -115,10 +115,11 @@ export const Home = (props) => {
 
 
     return (
-        <SafeAreaProvider style={{backgroundColor: colorsState?.forecastBackground}}>
+        <SafeAreaProvider style={{backgroundColor: colorsState?.forecastBackground, flex: 1}}>
             <CustomStatusBar backgroundColor={colorsState?.statusBarColor}/>
-            <View style={{paddingBottom:60}}>
-                {details.weather ? <CurrentView loading={loadingCurrentWeather || loadingForecastWeather}/> : <NoDataView loading={loadingCurrentWeather || loadingForecastWeather}/>}
+            <View style={{paddingBottom: 60}}>
+                {details.weather ? <CurrentView loading={loadingCurrentWeather || loadingForecastWeather}/> :
+                    <NoDataView loading={loadingCurrentWeather || loadingForecastWeather}/>}
                 {loadingCurrentWeather || loadingForecastWeather && <Spinner color={'white'}/>}
 
                 {
@@ -131,16 +132,21 @@ export const Home = (props) => {
             </View>
 
             <Box position="relative" h={100} w="100%">
-                <Fab position="absolute" size="sm" icon={<Icon onPress={()=>checkPermissions()} name={"refresh"} style={{color:colorsState?.forecastBackground, fontSize:20}}/>}  style={{backgroundColor:'white'}} />
+                <Fab position="absolute" size="sm" onPress={() => checkPermissions()}
+                     icon={<Icon name={"refresh"} style={{color: colorsState?.forecastBackground, fontSize: 20}}/>}
+                     style={{backgroundColor: 'white'}}/>
 
-                <Fab right={4} bottom={90} size="sm" icon={<Icon onPress={()=> {
-                    Navigation.push(props.componentId,
-                        {
-                            component: {
-                                name: 'SavedLocations'
-                            }
-                        })
-                }} name={"hexagram-outline"} style={{color:colorsState?.forecastBackground, fontSize:20}}/>}  style={{backgroundColor:'white'}} />
+                <Fab right={4} bottom={90} size="sm"
+                     icon={<Icon name={"hexagram-outline"} style={{color: colorsState?.forecastBackground, fontSize: 20}}/>}
+                     style={{backgroundColor: 'white'}}
+                     onPress={() => {
+                         Navigation.push(props.componentId,
+                             {
+                                 component: {
+                                     name: 'SavedLocations'
+                                 }
+                             })
+                     }}/>
             </Box>
 
         </SafeAreaProvider>
