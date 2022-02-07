@@ -1,22 +1,17 @@
-import {ImageBackground, StyleSheet, Linking, View, Platform} from "react-native";
-import DeviceInfo from 'react-native-device-info';
-import IntentLauncher, { IntentConstant } from 'react-native-intent-launcher'
+import {View} from "react-native";
 
-import {Box, Button, Center, FlatList, Heading, HStack, Spinner, Text, VStack} from "native-base";
-import React, {useEffect, useState} from "react";
+import {Box, Fab, FlatList, HStack, Text} from "native-base";
+import React from "react";
 import {SafeAreaProvider} from "react-native-safe-area-context/src/SafeAreaContext";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import {Navigation} from "react-native-navigation";
 import {CustomStatusBar} from "../../components/StatusBar/CustomStatusBar";
 import SavedLocationView from "./views/SavedLocationView";
 import {useSelector} from "react-redux";
-import {ForecastView} from "../Home/views/ForecastView";
 
 export const SavedLocations = (props) => {
 
     const {savedLocations} = useSelector((state) => state.weather)
-
-
 
     return (
         <SafeAreaProvider style={{flex: 1}}>
@@ -27,7 +22,7 @@ export const SavedLocations = (props) => {
                       onPress={() => Navigation.pop(props.componentId)}
                       style={{
                           fontSize: 20,
-                          padding:10,
+                          padding: 10,
                           marginRight: '20%',
                           color: 'grey'
                       }}
@@ -35,13 +30,20 @@ export const SavedLocations = (props) => {
                 <Text fontSize={'xl'}>Saved Locations</Text>
             </HStack>
             <View>
-
-                { Array.isArray(savedLocations) && savedLocations.length>0 ? <FlatList
+                {Array.isArray(savedLocations) && savedLocations.length > 0 ? <FlatList
                     data={savedLocations}
                     renderItem={item => <SavedLocationView item={item}/>}
-                /> : <Text>You have not saved any locations</Text> }
+                /> : <Text>You have not saved any locations</Text>}
 
             </View>
+            <Box position="relative" h={100} w="100%">
+                <Fab position="absolute" size="sm" icon={<Icon onPress={() => Navigation.push(props.componentId,
+                    {
+                        component: {
+                            name: 'MapScreen'
+                        }
+                    })} name={"map"} style={{color: 'blue', fontSize: 20}}/>} style={{backgroundColor: 'white'}}/>
+            </Box>
 
         </SafeAreaProvider>
 

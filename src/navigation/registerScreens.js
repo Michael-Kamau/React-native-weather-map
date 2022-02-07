@@ -7,6 +7,7 @@ import Root from "../containers/Root";
 import App from "../../App";
 import Home from "../containers/Home";
 import SavedLocations from "../containers/SavedLocations";
+import MapScreen from "../containers/MapScreen";
 
 export const registerScreens = () => {
     //Root Screen
@@ -24,5 +25,10 @@ export const registerScreens = () => {
         <Provider store={store}>
             <Root PassedComponent={SavedLocations} componentProps={props}/>
         </Provider>, () => SavedLocations);
+
+    Navigation.registerComponent("MapScreen", () => (props) =>
+        <Provider store={store}>
+            <Root PassedComponent={MapScreen} componentProps={props}/>
+        </Provider>, () => MapScreen);
 
 };
