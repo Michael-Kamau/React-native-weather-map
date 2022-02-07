@@ -12,9 +12,10 @@ import CurrentView from "./views/CurrentView";
 import {Box, Fab, FlatList, Spinner, View} from "native-base";
 import {ForecastView} from "./views/ForecastView";
 import {colorStates} from "../../utils/styles/colors";
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 import NoDataView from "./views/NoDataView";
 import {Navigation} from "react-native-navigation";
+import Snackbar from "react-native-snackbar";
 
 
 export const Home = (props) => {
@@ -22,6 +23,7 @@ export const Home = (props) => {
 
     const [colorsState, setColorsState] = useState({name: '', image: ''})
     const [locationState, setLocationState] = useState({latitude: '', longitude: ''})
+    const [loading, setLoading] = useState(false)
 
     const dispatch = useDispatch()
 
@@ -43,6 +45,7 @@ export const Home = (props) => {
         currentWeatherRequest(fetchCurrentWeatherConfig(lat, lon), (data) => {
             if (data.weather) {
                 dispatch(saveWeatherStatus(data, true))
+                setLoading(false)
             }
         })
     }
@@ -55,6 +58,7 @@ export const Home = (props) => {
     }
 
     const checkPermissions = async () => {
+        setLoading(true)
 
         if (Platform.OS === 'ios') {
             getCurrentLocation();
@@ -68,12 +72,19 @@ export const Home = (props) => {
                     },
                 );
                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+
                     getCurrentLocation()
                 } else {
                     // Permission Denied
                     alert('Location Permission Denied');
                 }
             } catch (err) {
+                Snackbar.show({
+                    text: 'Error encountered',
+                    duration: Snackbar.LENGTH_LONG,
+                });
+                setLoading(false)
+
                 console.warn(err);
             }
         }
@@ -90,11 +101,16 @@ export const Home = (props) => {
                 setLocationState({latitude: currentLatitude, longitude: currentLongitude});
             },
             (error) => {
+                Snackbar.show({
+                    text: error.message,
+                    duration: Snackbar.LENGTH_LONG,
+                });
+                setLoading(false)
                 console.log('error.message', error)
             },
             {
                 enableHighAccuracy: true,
-                timeout: 30000,
+                timeout: 35000,
                 maximumAge: 1000
             },
         );
@@ -118,8 +134,8 @@ export const Home = (props) => {
         <SafeAreaProvider style={{backgroundColor: colorsState?.forecastBackground, flex: 1}}>
             <CustomStatusBar backgroundColor={colorsState?.statusBarColor}/>
             <View style={{paddingBottom: 60}}>
-                {details.weather ? <CurrentView loading={loadingCurrentWeather || loadingForecastWeather}/> :
-                    <NoDataView loading={loadingCurrentWeather || loadingForecastWeather}/>}
+                {details.weather ? <CurrentView loading={loadingCurrentWeather || loadingForecastWeather || loading}/> :
+                    <NoDataView loading={loadingCurrentWeather || loadingForecastWeather ||loading}/>}
                 {loadingCurrentWeather || loadingForecastWeather && <Spinner color={'white'}/>}
 
                 {
